@@ -16,7 +16,6 @@ import { useNotification } from "@/context/NotificationContext";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { addTimes, subtractTimes } from "@/utils/TimeUtils";
-import { useRouter } from "next/navigation";
 
 const { Option } = Select;
 type OnChange = NonNullable<TableProps<Journey>["onChange"]>;
@@ -36,15 +35,21 @@ interface JourneyDetails {
   type: number;
 }
 
-interface Journey {
+interface Trip {
   id: number;
+  departureDay: string;
   departureTime: string;
-  travelTime: string;
-  status: number;
+  priceId: number;
+  price: number;
+  bus: {
+    id: number;
+    licensePlates: string;
+    status: number;
+    typeId: number;
+    typeName: string;
+  };
   departureOffice: JourneyDetails;
   destinationOffice: JourneyDetails;
-  transferOffice: JourneyDetails[];
-  stopStation: JourneyDetails[];
 }
 
 interface Province {
@@ -60,9 +65,14 @@ interface Office {
   provinceName: string;
 }
 
-const Journey: React.FC = () => {
+interface TripProps {
+  params: {
+    id: number;
+  };
+}
+
+const Trip: React.FC<TripProps> = ({ params }) => {
   const [form] = Form.useForm();
-  const router = useRouter();
   const { setNotification } = useNotification();
   const [journeyList, setJourneyList] = useState<Journey[]>();
   const [provinceList, setProvinceList] = useState<Province[]>([]);
@@ -112,7 +122,7 @@ const Journey: React.FC = () => {
     });
   };
 
-  const columns: TableColumnsType<Journey> = [
+  const columns: TableColumnsType<Trip> = [
     {
       title: "ID",
       dataIndex: "id",
@@ -125,23 +135,7 @@ const Journey: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: "Chuyến",
-      key: "id",
-      filteredValue: filteredInfo.address || null,
-      onFilter: (value, record) => record.address.includes(value as string),
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
-      render: (_, record: Journey) => (
-        <span>
-          {record.departureOffice.provinceName} -{" "}
-          {record.destinationOffice.provinceName}
-        </span>
-      ),
-      ellipsis: true,
-      width: "180px",
-    },
-    {
-      title: "Khởi hành",
+      title: "Giờ khởi hành",
       dataIndex: "departureTime",
       key: "departureTime",
       sorter: (a, b) => a.age - b.age,
@@ -150,8 +144,20 @@ const Journey: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: "Thời gian chạy",
-      dataIndex: "travelTime",
+      title: "Giá",
+      key: "id",
+      dataIndex: "price",
+      filteredValue: filteredInfo.address || null,
+      onFilter: (value, record) => record.address.includes(value as string),
+      sorter: (a, b) => a.address.length - b.address.length,
+      sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
+      ellipsis: true,
+      width: "180px",
+    },
+
+    {
+      title: "Xe chạy",
+      dataIndex: "bus.licensePlates",
       key: "travelTime",
       filteredValue: filteredInfo.address || null,
       onFilter: (value, record) => record.address.includes(value as string),
@@ -161,73 +167,20 @@ const Journey: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      title: "Loại ghế",
+      dataIndex: "bus.typeName",
+      key: "travelTime",
       filteredValue: filteredInfo.address || null,
       onFilter: (value, record) => record.address.includes(value as string),
       sorter: (a, b) => a.address.length - b.address.length,
       sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
-      render: (status) => (status == 0 ? "Dừng hoạt động" : "Hoạt động"),
-      width: "10%",
+      width: "13%",
       ellipsis: true,
     },
     {
-      title: "Lịch trình",
+      title: "Tài xế/phụ xe",
       ellipsis: true,
-      render: (value, record, index) => (
-        <div>
-          {record.transferOffice.length != 0 && (
-            <div>
-              <div className={"font-medium"}>Trung chuyển</div>
-              {record.transferOffice.map(
-                (item) =>
-                  item && (
-                    <div
-                      className={"ml-2 font-medium text-orange-600"}
-                      key={item.id}
-                    >
-                      {item.officeName}{" "}
-                      {subtractTimes(record.departureTime, item.deltaTime)}
-                    </div>
-                  ),
-              )}
-            </div>
-          )}
-
-          <div>
-            <div className={"font-medium"}>Xuất phát</div>
-            <div className={"ml-2 font-medium text-blue-600"}>
-              {record.departureOffice.officeName} {record.departureTime}
-            </div>
-          </div>
-          {record.stopStation.length != 0 && (
-            <div>
-              <div className={"font-medium"}>Trạm dừng/nghỉ</div>
-              {record.stopStation.map(
-                (item) =>
-                  item && (
-                    <div
-                      className={"ml-2 font-medium text-orange-600"}
-                      key={item.id}
-                    >
-                      {item.officeName}{" "}
-                      {addTimes(record.departureTime, item.deltaTime)}
-                    </div>
-                  ),
-              )}
-            </div>
-          )}
-          <div>
-            <div className={"font-medium"}>Điểm đến</div>
-            <div className={"ml-2 font-medium text-green-600"}>
-              {record.destinationOffice.officeName +
-                " " +
-                record.destinationOffice.deltaTime}
-            </div>
-          </div>
-        </div>
-      ),
+      render: (value, record, index) => <div>Tôi là tài xế</div>,
     },
     {
       title: "Chức năng",
@@ -238,9 +191,7 @@ const Journey: React.FC = () => {
           <Button className={"mx-1"} onClick={() => onClickDelete(value.id)}>
             Xóa
           </Button>
-          <Button onClick={() => onClickTripInfo(value.id)}>
-            Xem chuyến đi
-          </Button>
+          <Button>Xem chuyến đi</Button>
         </div>
       ),
     },
@@ -296,10 +247,6 @@ const Journey: React.FC = () => {
     setDeleteJourneyId(id);
   };
 
-  const onClickTripInfo = (id: number) => {
-    router.push("/journey/trip/" + id);
-  };
-
   const createJourney = async (body: any) => {
     try {
       const data = await apiClient.post("/manage/journey", body);
@@ -319,7 +266,7 @@ const Journey: React.FC = () => {
     }
   };
 
-  const onFinish = (values: Journey) => {
+  const onFinish = (values: any) => {
     console.log(values);
 
     //
@@ -433,7 +380,6 @@ const Journey: React.FC = () => {
     <>
       <Space style={{ marginBottom: 16 }}>
         <Button onClick={onClickAdd}>Thêm hành trình</Button>
-        <Button onClick={() => loadJourney()}>Reload</Button>
         <Button
           onClick={() => {
             console.log(departureOffices);
@@ -816,4 +762,4 @@ const Journey: React.FC = () => {
   );
 };
 
-export default Journey;
+export default Trip;

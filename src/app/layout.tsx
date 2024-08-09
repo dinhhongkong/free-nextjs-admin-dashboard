@@ -6,6 +6,7 @@ import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import { AuthProvider } from "@/context/AuthContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 
 export default function RootLayout({
   children,
@@ -24,14 +25,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        {/*<AuthProvider>*/}
-        {/*  <div className="dark:bg-boxdark-2 dark:text-bodydark">*/}
-        {/*    {loading ? <Loader /> : children}*/}
-        {/*  </div>*/}
-        {/*</AuthProvider>*/}
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? <Loader /> : children}
-        </div>
+        {/*<NotificationProvider>*/}
+        {/*  <AuthProvider>*/}
+        {/*    <div className="dark:bg-boxdark-2 dark:text-bodydark">*/}
+        {/*      {loading ? <Loader /> : children}*/}
+        {/*    </div>*/}
+        {/*  </AuthProvider>*/}
+        {/*</NotificationProvider>*/}
+
+        <NotificationProvider>
+          <div className="dark:bg-boxdark-2 dark:text-bodydark">
+            {loading ? <Loader /> : children}
+          </div>
+        </NotificationProvider>
       </body>
     </html>
   );

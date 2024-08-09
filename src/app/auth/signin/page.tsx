@@ -1,16 +1,75 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { useAuth } from "@/context/AuthContext";
+import { useNotification } from "@/context/NotificationContext";
+import apiClient from "@/api/apiClient";
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Đinh Hồng Kông",
   description: "This is Next.js Admin Dashboard",
 };
 
+interface LoginResponse {
+  accessToken: string;
+  tokenType: string;
+}
+
 const SignIn: React.FC = () => {
+  const { login } = useAuth();
+  const { setNotification } = useNotification();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  function onClickLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (formData.username.length === 0 && formData.password.length === 0) {
+      console.log(formData);
+      setNotification({
+        show: true,
+        message: "vui lòng điền tài khoản và mật khẩu",
+        type: "error",
+      });
+      return;
+    }
+
+    const sendLogin = async () => {
+      try {
+        apiClient.clearToken();
+        const data: LoginResponse = await apiClient.post(
+          "/auth/admin/login",
+          formData,
+        );
+        setNotification({
+          show: true,
+          message: "Đăng nhập thành công",
+          type: "success",
+        });
+        await login(data.accessToken);
+      } catch (error) {
+        setNotification({
+          show: true,
+          message: "Tài khoản hoặc mật khẩu không chính xác",
+          type: "error",
+        });
+      }
+    };
+
+    sendLogin();
+  }
+
   return (
     <div className={"mt-12"}>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -26,11 +85,6 @@ const SignIn: React.FC = () => {
                   height={32}
                 />
               </Link>
-
-              {/*<p className="2xl:px-20">*/}
-              {/*  Lorem ipsum dolor sit amet, consectetur adipiscing elit*/}
-              {/*  suspendisse.*/}
-              {/*</p>*/}
 
               <span className="mt-15 inline-block">
                 <svg
@@ -166,15 +220,17 @@ const SignIn: React.FC = () => {
                 Đăng nhập
               </h2>
 
-              <form>
+              <form onSubmit={onClickLogin}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Email
+                    Tên đăng nhập
                   </label>
                   <div className="relative">
                     <input
-                      type="email"
-                      placeholder="Vui lòng nhập email"
+                      onChange={handleChange}
+                      name={"username"}
+                      type="username"
+                      placeholder="Vui lòng nhập username"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
@@ -204,6 +260,8 @@ const SignIn: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
+                      onChange={handleChange}
+                      name={"password"}
                       type="password"
                       placeholder="Vui lòng nhập mật khẩu"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -234,11 +292,13 @@ const SignIn: React.FC = () => {
                 </div>
 
                 <div className="mb-5">
-                  <input
-                    type="submit"
-                    value="Đăng nhập"
+                  <button
+                    onClick={onClickLogin}
+                    type={"button"}
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                  />
+                  >
+                    Đăng nhập
+                  </button>
                 </div>
 
                 {/*<button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">*/}

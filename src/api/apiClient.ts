@@ -1,12 +1,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 class ApiClient {
-  private api: AxiosInstance;
+  public api: AxiosInstance;
 
   constructor() {
     this.api = axios.create({
-      baseURL: process.env.NEXT_PUBLIC_API_URL,
-      withCredentials: true, // Để gửi cookies với mỗi request
+      baseURL: "http://localhost:8080",
+      // withCredentials: true, // Để gửi cookies với mỗi request
     });
 
     // Thêm interceptor request
