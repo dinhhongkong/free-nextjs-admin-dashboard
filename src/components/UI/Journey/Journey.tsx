@@ -234,7 +234,6 @@ const Journey: React.FC = () => {
       ellipsis: true,
       render: (value) => (
         <div>
-          <Button onClick={() => onClickUpdate(value)}>Sửa</Button>
           <Button className={"mx-1"} onClick={() => onClickDelete(value.id)}>
             Xóa
           </Button>

@@ -25,19 +25,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        {/*<NotificationProvider>*/}
-        {/*  <AuthProvider>*/}
-        {/*    <div className="dark:bg-boxdark-2 dark:text-bodydark">*/}
-        {/*      {loading ? <Loader /> : children}*/}
-        {/*    </div>*/}
-        {/*  </AuthProvider>*/}
-        {/*</NotificationProvider>*/}
-
         <NotificationProvider>
-          <div className="dark:bg-boxdark-2 dark:text-bodydark">
-            {loading ? <Loader /> : children}
-          </div>
+          <AuthProvider>
+            <div className="dark:bg-boxdark-2 dark:text-bodydark">
+              {loading ? <Loader /> : children}
+            </div>
+          </AuthProvider>
         </NotificationProvider>
+
+        {/*<NotificationProvider>*/}
+        {/*  <div className="dark:bg-boxdark-2 dark:text-bodydark">*/}
+        {/*    {loading ? <Loader /> : children}*/}
+        {/*  </div>*/}
+        {/*</NotificationProvider>*/}
       </body>
     </html>
   );

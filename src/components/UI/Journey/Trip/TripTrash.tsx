@@ -16,9 +16,10 @@ import { useNotification } from "@/context/NotificationContext";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { addTimes, subtractTimes } from "@/utils/TimeUtils";
+import { useRouter } from "next/navigation";
 
 const { Option } = Select;
-type OnChange = NonNullable<TableProps<Journey>["onChange"]>;
+type OnChange = NonNullable<TableProps<TripTrash>["onChange"]>;
 type Filters = Parameters<OnChange>[1];
 
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -35,7 +36,7 @@ interface JourneyDetails {
   type: number;
 }
 
-interface Trip {
+interface TripTrash {
   id: number;
   departureDay: string;
   departureTime: string;
@@ -73,6 +74,7 @@ interface TripProps {
 
 const Trip: React.FC<TripProps> = ({ params }) => {
   const [form] = Form.useForm();
+  const router = useRouter();
   const { setNotification } = useNotification();
   const [journeyList, setJourneyList] = useState<Journey[]>();
   const [provinceList, setProvinceList] = useState<Province[]>([]);
@@ -122,7 +124,7 @@ const Trip: React.FC<TripProps> = ({ params }) => {
     });
   };
 
-  const columns: TableColumnsType<Trip> = [
+  const columns: TableColumnsType<TripTrash> = [
     {
       title: "ID",
       dataIndex: "id",

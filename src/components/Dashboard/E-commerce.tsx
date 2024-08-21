@@ -1,11 +1,13 @@
 "use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ChartOne from "../Charts/ChartOne";
 import ChartTwo from "../Charts/ChartTwo";
 import ChatCard from "../Chat/ChatCard";
 import TableOne from "../Tables/TableOne";
 import CardDataStats from "../CardDataStats";
+import { formatCurrency } from "@/utils/formatCurrency";
+import apiClient from "@/api/apiClient";
 
 const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
   ssr: false,
@@ -15,11 +17,40 @@ const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
   ssr: false,
 });
 
+interface DataApi {
+  totalTrip: string;
+  totalTickets: string;
+  totalIncome: number;
+  totalCustomer: string;
+}
+
 const ECommerce: React.FC = () => {
+  const [data, setData] = useState<DataApi>({
+    totalTrip: "0",
+    totalTickets: "0",
+    totalIncome: 0,
+    totalCustomer: "0",
+  });
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const data: DataApi = await apiClient.get("/report/total");
+      setData(data);
+    } catch (error) {}
+  };
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Tổng chuyến đi" total="15" rate="" levelUp>
+        <CardDataStats
+          title="Tổng chuyến đi"
+          total={data.totalTrip}
+          rate=""
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -38,7 +69,12 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Tổng vé đã đặt" total="10" rate="" levelUp>
+        <CardDataStats
+          title="Tổng vé đã đặt"
+          total={data.totalTickets}
+          rate=""
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -63,7 +99,7 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
         <CardDataStats
           title="Tổng thu nhập"
-          total="18.750.000đ"
+          total={formatCurrency(data.totalIncome)}
           rate=""
           levelUp
         >
@@ -85,7 +121,12 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Tổng khách hàng" total="3" rate="" levelDown>
+        <CardDataStats
+          title="Tổng khách hàng"
+          total={data.totalCustomer}
+          rate=""
+          levelDown
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -113,9 +154,9 @@ const ECommerce: React.FC = () => {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartThree />
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
-        </div>
+        {/*<div className="col-span-12 xl:col-span-8">*/}
+        {/*  <TableOne />*/}
+        {/*</div>*/}
       </div>
     </>
   );

@@ -58,3 +58,13 @@ export function formatDate(dateString: string): string {
   // Tạo chuỗi mới với định dạng dd-MM-yyyy
   return `${day}/${month}/${year}`;
 }
+
+export function formatYYYYMMDD(dateString: string | string[]): string {
+  // Kiểm tra xem chuỗi ngày có đúng định dạng không
+
+  // Tách chuỗi thành các phần
+  const [day, month, year] = dateString.split("/");
+
+  // Tạo chuỗi mới với định dạng dd-MM-yyyy
+  return `${year}-${month}-${day}`;
+}
