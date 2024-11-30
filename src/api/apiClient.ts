@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import Cookies from 'js-cookie';
 
 class ApiClient {
   public api: AxiosInstance;
@@ -12,7 +13,8 @@ class ApiClient {
     // Thêm interceptor request
     this.api.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem("authToken");
+        // const token = localStorage.getItem("authToken");
+        const token = Cookies.get("authToken");
         if (token) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }
@@ -39,12 +41,14 @@ class ApiClient {
 
   // Phương thức để set token sau khi đăng nhập thành công
   public setToken(token: string) {
-    localStorage.setItem("authToken", token);
+    Cookies.set('authToken', token)
+    // localStorage.setItem("authToken", token);
   }
 
   // Phương thức để xóa token khi đăng xuất
   public clearToken() {
-    localStorage.removeItem("authToken");
+    Cookies.remove('authToken');
+    // localStorage.removeItem("authToken");
   }
 
   public async get<T>(url: string, params?: any): Promise<T> {

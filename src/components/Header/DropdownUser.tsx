@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 const DropdownUser = () => {
-  const { logout } = useAuth();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const {user, logout } = useAuth();
+  const [dropdownOpen , setDropdownOpen] = useState(false);
   const router = useRouter();
   const onClickLogOut = () => {
     logout();
@@ -23,9 +23,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Đinh Hồng Kông
+            {user?.username}
           </span>
-          <span className="block text-xs">ADMIN</span>
+          <span className="block text-xs">{user?.role}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">

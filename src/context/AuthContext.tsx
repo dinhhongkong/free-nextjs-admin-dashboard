@@ -7,11 +7,13 @@ import React, {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import apiClient from "@/api/apiClient";
 import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { User } from "@/model/Auth";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User ;
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -22,73 +24,51 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [infoUser, setInfoUser] = useState({
+  const [user, setUser] = useState<User>({
+    id: 0,
     username: "",
     role: "",
+    iat: 0,
+    exp: 0,
   });
+
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("authToken");
+      // const token = localStorage.getItem("authToken");
+      const token = Cookies.get("authToken");
       if (token) {
-        try {
-          // Giả sử validate-token trả về true nếu token hợp lệ
-          const data = await apiClient.get(
-            "/auth/admin/validate-token/" + token,
-          );
-          console.log(data);
-          if (data === "OK") {
-            setIsAuthenticated(true);
-            router.push("/");
-          } else {
-            setIsAuthenticated(false);
-            router.push("/auth/signin");
-          }
-        } catch (error) {
-          console.error("Auth check failed:", error);
+        const decodedToken: User = jwtDecode(token);
+        if (decodedToken.exp < Date.now() / 1000) {
           setIsAuthenticated(false);
-          router.push("/auth/signin");
+          Cookies.remove("authToken");
+          return;
         }
-      } else {
-        setIsAuthenticated(false);
-        router.push("/auth/signin");
+        setUser(decodedToken);
+        setIsAuthenticated(true);
       }
     };
 
     checkAuth();
   }, []);
 
-  // const checkAuth = async () => {
-  //   const token = localStorage.getItem("authToken");
-  //   if (token) {
-  //     try {
-  //       const data = apiClient.get("/auth/admin/validate-token/" + token);
-  //       setIsAuthenticated(true);
-  //     } catch (error) {
-  //       console.error("Auth check failed:", error);
-  //       setIsAuthenticated(false);
-  //     }
-  //   } else {
-  //     setIsAuthenticated(false);
-  //     router.push("/auth/signin");
-  //   }
-  // };
-
   const login = async (token: string) => {
-    localStorage.setItem("authToken", token);
+    // localStorage.setItem("authToken", token);
+    Cookies.set("authToken", token);
     setIsAuthenticated(true);
     router.push("/");
   };
 
   const logout = async () => {
-    localStorage.removeItem("authToken");
+    // localStorage.removeItem("authToken");
+    Cookies.remove("authToken");
     setIsAuthenticated(false);
     router.push("/auth/signin");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
