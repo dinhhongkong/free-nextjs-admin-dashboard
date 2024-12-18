@@ -118,7 +118,7 @@ const Office: React.FC = () => {
 
   const loadProvince = async () => {
     try {
-      const data: Province[] = await apiClient.get("/booking/provinces");
+      const data: Province[] = await apiClient.get("/manage/provinces");
       setProvinceList(data);
     } catch (error) {
       setNotification({

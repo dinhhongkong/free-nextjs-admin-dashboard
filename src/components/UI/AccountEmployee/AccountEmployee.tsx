@@ -37,7 +37,7 @@ interface Account {
   enable: boolean;
 }
 
-const Employee: React.FC = () => {
+export  const AccountEmployee: React.FC = () => {
   const [form] = Form.useForm();
   const [formAccount] = Form.useForm();
   const { setNotification } = useNotification();
@@ -133,9 +133,7 @@ const Employee: React.FC = () => {
       key: "x",
       render: (value) => (
         <div>
-          <Button onClick={() => onClickUpdate(value)}>Sửa</Button>
-          <Button onClick={() => onClickDelete(value.id)}>Xóa</Button>
-          {/* <Button onClick={() => onClickAccountBtn(value)}>Tài khoản</Button> */}
+          <Button onClick={() => onClickAccountBtn(value)}>Tài khoản</Button>
         </div>
       ),
     },
@@ -288,7 +286,7 @@ const Employee: React.FC = () => {
   return (
     <>
       <Space style={{ marginBottom: 16 }}>
-        <Button onClick={onClickAdd}>Thêm nhân viên</Button>
+        {/* <Button onClick={onClickAdd}>Thêm nhân viên</Button> */}
         <Button onClick={loadEmployeeList}>Reload</Button>
         <Button onClick={clearFilters}>Xóa filters</Button>
         <Button onClick={clearAll}>Xóa filters và sắp xếp</Button>
@@ -453,6 +451,8 @@ const Employee: React.FC = () => {
             >
               <Option value={2}>ADMIN</Option>
               <Option value={3}>MANAGER</Option>
+              <Option value={4}>TICKET_STAFF</Option>
+
             </Select>
           </Form.Item>
 
@@ -473,4 +473,4 @@ const Employee: React.FC = () => {
   );
 };
 
-export default Employee;
+

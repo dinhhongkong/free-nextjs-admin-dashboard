@@ -1,5 +1,5 @@
 export type User = {
-  id: number | null;
+  userId: number | null ;
   username: string | null;
   role: string | null;
   iat: number;

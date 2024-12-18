@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@ant-design/nextjs-registry": "^1.0.0",
-    "antd": "^5.19.3",
+    "@ant-design/pro-chat": "^1.15.3",
+    "antd": "^5.22.3",
+    "antd-style": "^3.7.1",
     "apexcharts": "^3.45.2",
     "axios": "^1.7.2",
+    "dayjs": "^1.11.13",
     "flatpickr": "^4.6.13",
     "js-cookie": "^3.0.5",
     "jsvectormap": "^1.6.0",

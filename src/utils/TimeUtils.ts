@@ -49,7 +49,7 @@ export function formatDate(dateString: string): string {
   // Kiểm tra xem chuỗi ngày có đúng định dạng không
   const regex = /^\d{4}-\d{2}-\d{2}$/;
   if (!regex.test(dateString)) {
-    throw new Error("Invalid date format. Expected yyyy-MM-dd");
+    return "";
   }
 
   // Tách chuỗi thành các phần
@@ -67,4 +67,21 @@ export function formatYYYYMMDD(dateString: string | string[]): string {
 
   // Tạo chuỗi mới với định dạng dd-MM-yyyy
   return `${year}-${month}-${day}`;
+}
+
+
+export function formatTime(time: string) {
+  if (!/^\d{2}:\d{2}:\d{2}$/.test(time)) {
+    console.warn('formatTime: Invalid time format. Expected "HH:MM:SS"');
+    return 'Invalid time';
+  }
+
+  const [hours, minutes] = time.split(':');
+
+  return `${hours}h${minutes}`;
+}
+
+export function getHours(timeString: string) {
+  const [hours] = timeString.split(':');
+  return parseInt(hours, 10).toString();
 }

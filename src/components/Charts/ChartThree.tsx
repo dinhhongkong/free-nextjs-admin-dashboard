@@ -142,7 +142,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Giường nằm </span>
-              <span> {series[0]}% </span>
+              <span> {series[0].toPrecision(2)}% </span>
             </p>
           </div>
         </div>
@@ -151,7 +151,7 @@ const ChartThree: React.FC = () => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> Limousine </span>
-              <span> {series[1]}% </span>
+              <span> {series[1].toPrecision(2)}% </span>
             </p>
           </div>
         </div>

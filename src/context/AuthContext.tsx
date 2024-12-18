@@ -56,6 +56,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = async (token: string) => {
     // localStorage.setItem("authToken", token);
     Cookies.set("authToken", token);
+    const decodedToken: User = jwtDecode(token);
+    setUser(decodedToken);
     setIsAuthenticated(true);
     router.push("/");
   };
