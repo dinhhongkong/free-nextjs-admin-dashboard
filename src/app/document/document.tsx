@@ -185,7 +185,16 @@ export default function Document() {
             key="submit"
             type="primary"
             className={"bg-blue-500"}
-            onClick={()=> deleteDocument(deleteDocumentId)}
+            onClick={()=>  {
+              deleteDocument(deleteDocumentId)
+              setConfirmDelete(false)
+              setNotification({
+                show: true,
+                message: "đang tải lại ds",
+                type: "success",
+              });
+              } 
+            }
           >
             Xóa
           </Button>,
